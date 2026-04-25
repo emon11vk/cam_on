@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lời cảm ơn từ Mơ - Digital SAT</title>
+    <link href="https://fonts.googleapis.com/css2?family=VT323&family=Nunito:wght@400;600;700;800&family=Quicksand:wght@500;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #ff9eb5; 
+            --heart: #ff6b81; 
+            --pen: #fcd53f;   
+            --glass: rgba(20, 20, 35, 0.85); 
+            --border: rgba(255, 255, 255, 0.15);
+            --radius: 28px;
+        }
+
+        body, html { 
+            margin: 0; padding: 0; width: 100%; height: 100%; 
+            overflow: hidden; font-family: 'Quicksand', sans-serif; background: #000; color: white;
+        }
+
+        /* Video Nền */
+        .video-bg {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            object-fit: cover; z-index: 0; opacity: 0.8;
+        }
+
+        /* Lớp phủ nội dung */
+        .overlay {
+            position: absolute; inset: 0; display: flex; justify-content: center; align-items: center;
+            background: rgba(0, 0, 0, 0.3); padding: 15px; z-index: 2;
+        }
+
+        /* MÀN HÌNH 1: Logo dạo đầu hiện dần */
+        .screen-1 { 
+            text-align: center; display: flex; flex-direction: column; align-items: center; 
+            width: 100%;
+        }
+        
+        .intro-logo-img {
+            width: 180px; max-width: 60%; height: auto;
+            opacity: 0;
+            animation: logoFadeIn 2.5s ease forwards;
+            margin-bottom: 30px;
+            filter: drop-shadow(0 0 15px rgba(255, 158, 181, 0.5));
+        }
+
+        @keyframes logoFadeIn {
+            0% { opacity: 0; transform: scale(0.8); }
+            100% { opacity: 1; transform: scale(1); }
+        }
+
+        .btn-square {
+            background: rgba(20, 20, 35, 0.6); backdrop-filter: blur(5px);
+            border: 2px solid var(--primary); color: var(--primary); padding: 18px 30px;
+            border-radius: 0px; font-size: 18px; font-weight: bold; font-family: 'Quicksand', sans-serif;
+            cursor: pointer; transition: 0.4s; opacity: 0;
+            animation: logoFadeIn 1s ease 2s forwards;
+        }
+        .btn-square:hover { background: var(--primary); color: #141423; box-shadow: 0 0 25px var(--primary); }
+
+        /* KHUNG DIALOG (Visual Novel style) */
+        .card {
+            background: var(--glass); backdrop-filter: blur(15px);
+            border: 1px solid var(--border); border-radius: var(--radius); 
+            padding: 60px 40px 35px 40px; 
+            width: 100%; max-width: 650px;
+            box-shadow: 0 25px 60px rgba(0,0,0,0.8); position: relative;
+            display: none; flex-direction: column; min-height: 250px;
+        }
+        .card.active { display: flex; animation: cardSlideUp 0.6s ease-out forwards; }
+
+        @keyframes cardSlideUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* Logo dính thẳng vào box (Bản PNG) */
+        .logo-stuck {
+            position: absolute; 
+            top: -50px; left: 15px;
+            z-index: 10;
+        }
+        .logo-stuck img {
+            width: 100px; height: auto;
+            filter: drop-shadow(0 5px 15px rgba(0,0,0,0.5));
+        }
+
+        /* Chữ hiển thị */
+        .text-content { 
+            font-size: 18px; line-height: 1.6; color: #fff; margin-bottom: 25px; 
+            font-weight: 500; transition: opacity 0.3s ease;
+        }
+        .highlight { color: var(--pen); font-weight: bold; font-family: 'VT323', monospace; font-size: 22px; }
+
+        .btn-next {
+            background: var(--primary); color: #141423; border: none; padding: 10px 30px;
+            border-radius: 15px; font-size: 16px; font-weight: bold; font-family: 'Quicksand', sans-serif;
+            cursor: pointer; transition: 0.2s; align-self: flex-end;
+        }
+        .btn-next:hover { background: var(--heart); color: white; transform: scale(1.05); }
+
+        /* Quà tặng */
+        .gift-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 10px; }
+        .gift-box {
+            background: rgba(255, 255, 255, 0.03); border: 2px dashed var(--pen);
+            padding: 15px; border-radius: 18px; transition: 0.3s;
+        }
+        .gift-box:hover { background: rgba(255, 255, 255, 0.08); border-style: solid; }
+        .gift-title { font-family: 'VT323', monospace; font-size: 20px; color: var(--pen); margin-bottom: 8px; }
+        .gift-desc { font-size: 13px; color: #ccc; margin-bottom: 12px; line-height: 1.4; }
+        .gift-link {
+            display: block; background: var(--pen); color: #141423; text-decoration: none; 
+            padding: 8px; border-radius: 10px; text-align: center; font-weight: bold; font-size: 13px;
+        }
+        .note { font-size: 12px; color: var(--primary); margin-top: 15px; text-align: center; font-style: italic; }
+
+        /* TƯƠNG THÍCH ĐIỆN THOẠI */
+        @media (max-width: 600px) {
+            .card { padding: 50px 25px 30px 25px; min-height: 280px; }
+            .logo-stuck { top: -40px; left: 10px; }
+            .logo-stuck img { width: 85px; }
+            .text-content { font-size: 16px; }
+            .gift-grid { grid-template-columns: 1fr; } /* Xếp dọc trên mobile */
+            .btn-square { width: 90%; font-size: 16px; padding: 15px; }
+            .intro-logo-img { width: 140px; }
+        }
+
+    </style>
+</head>
+<body>
+
+    <video class="video-bg" autoplay loop muted playsinline>
+        <source src="camon_background.mp4" type="video/mp4">
+    </video>
+
+    <audio id="bgMusic" src="camon_sound.m4a" loop></audio>
+
+    <div class="overlay">
+        
+        <div id="intro-screen" class="screen-1">
+            <img src="Mo_logo.png" alt="Logo Mơ" class="intro-logo-img">
+            <button class="btn-square" onclick="startJourney()">
+                Bắt đầu cuộc hành trình cùng Mơ
+            </button>
+        </div>
+
+        <div id="main-card" class="card">
+            <div class="logo-stuck">
+                <img src="Mo_logo.png" alt="Logo Mơ">
+            </div>
+            <div id="text-box" class="text-content"></div>
+            <button id="next-btn" class="btn-next" onclick="handleNext()">Tiếp</button>
+        </div>
+
+    </div>
+
+    <script>
+        const story = [
+            "Bọn anh thực sự cảm ơn mấy đứa vì đã tham gia buổi học này cùng <span class='highlight'>Mơ - Digital SAT</span> nhaaa",
+            "Trong quá trình học SAT, bọn em chắc chắn sẽ gặp rất nhiều khó khăn và thách thức. Nhưng đừng vì vậy mà nản chí nhaa. Bời vì…",
+            "Bọn em có biết ý nghĩa của cái tên <span class='highlight'>Mơ</span> trong cái tên của bọn anh không ? :3<br><br>Vì chúng ta là những kẻ mộng mơ, mà những người mộng mơ thì đâu có nản chí vì những thách thức đúng chứuuuuu. Vì chúng ta là những người có ước mơ mà. Vậy nên…",
+            "Bọn anh hi vọng sẽ được đồng hành cùng em trên chặng đường sắp tới, để giúp em tiến đến cái <span class='highlight'>MƠ</span> của mình… Và bọn anh cũng có một món quà nhỏ cho bọn em."
+        ];
+
+        let step = 0;
+
+        function startJourney() {
+            const music = document.getElementById('bgMusic');
+            music.volume = 0.6;
+            music.play().catch(e => console.log("Cần tương tác để phát nhạc"));
+
+            document.getElementById('intro-screen').style.display = 'none';
+            document.getElementById('main-card').classList.add('active');
+            showText();
+        }
+
+        function showText() {
+            const box = document.getElementById('text-box');
+            box.style.opacity = 0;
+            setTimeout(() => {
+                box.innerHTML = story[step];
+                box.style.opacity = 1;
+            }, 300);
+        }
+
+        function handleNext() {
+            step++;
+            if (step < story.length) {
+                showText();
+            } else {
+                showGifts();
+            }
+        }
+
+        function showGifts() {
+            const box = document.getElementById('text-box');
+            const btn = document.getElementById('next-btn');
+            btn.style.display = 'none';
+
+            box.innerHTML = `
+                <div style="font-size: 18px; color: var(--primary); font-weight: 700; text-align: center; margin-bottom: 15px;">Món quà nhỏ từ Mơ ✨</div>
+                <div class="gift-grid">
+                    <div class="gift-box">
+                        <div class="gift-title">📄 KHO ĐỀ THI THẬT</div>
+                        <div class="gift-desc">Tổng hợp từng dạng đề thi thật mà bọn anh đã dày công sưu tầm.</div>
+                        <a href="https://drive.google.com/drive/folders/1UtNsDfGtV5GjoSMZH6Q-2pFtnXFMnzEN?usp=drive_link" class="gift-link" target="_blank">Mở Google Drive</a>
+                    </div>
+                    <div class="gift-box">
+                        <div class="gift-title">📚 TỪ VỰNG SAT</div>
+                        <div class="gift-desc">Những từ vựng "xương máu" bọn anh góp nhặt trên hành trình.</div>
+                        <a href="https://study4.com/flashcards/lists/242935/" class="gift-link" target="_blank">Học trên Study4</a>
+                    </div>
+                </div>
+                <div class="note">⚠️ (Các em nhớ đăng kí acc study4 mới vào được link này nhaa)</div>
+            `;
+        }
+    </script>
+</body>
+</html>
